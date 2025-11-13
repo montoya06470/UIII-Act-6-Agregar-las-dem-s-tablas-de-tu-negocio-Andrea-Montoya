@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Proveedores{% endblock %}
+{% block content %}
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <h3>Proveedores Registrados</h3>
+        <a href="{% url 'agregar_proveedor' %}" class="btn btn-light">
+            <i class="fas fa-plus"></i> Agregar Proveedor
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-success">
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Empresa</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Dirección</th>
+                        <th>País</th>
+                        <th>Tipo Producto</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in proveedores %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ p.nombre }}</strong></td>
+                        <td>{{ p.empresa }}</td>
+                        <td>{{ p.telefono }}</td>
+                        <td><a href="mailto:{{ p.correo }}">{{ p.correo }}</a></td>
+                        <td>{{ p.direccion }}</td>
+                        <td>{{ p.pais }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if p.tipo_producto == 'bebidas' %}bg-primary
+                                {% elif p.tipo_producto == 'alimentos' %}bg-warning text-dark
+                                {% else %}bg-info{% endif %}">
+                                {{ p.get_tipo_producto_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'actualizar_proveedor' p.id %}" class="btn btn-warning btn-sm" title="Editar">
+                                Editar
+                            </a>
+                            <a href="{% url 'borrar_proveedor' p.id %}" class="btn btn-danger btn-sm" title="Eliminar">
+                                Borrar
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            <h5 class="text-muted">No hay proveedores registrados aún</h5>
+                            <a href="{% url 'agregar_proveedor' %}" class="btn btn-success mt-2">
+                                Agregar el primer proveedor
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

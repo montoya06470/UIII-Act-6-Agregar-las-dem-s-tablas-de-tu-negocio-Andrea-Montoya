@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Clientes{% endblock %}
+{% block content %}
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+        <h3>Clientes</h3>
+        <a href="{% url 'agregar_cliente' %}" class="btn btn-light">+ Nuevo</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Dirección</th>
+                    <th>Registro</th>
+                    <th>Tipo</th>
+                    <th>Notas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in clientes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><strong>{{ c.nombre }}</strong></td>
+                    <td>{{ c.telefono }}</td>
+                    <td><a href="mailto:{{ c.correo }}">{{ c.correo }}</a></td>
+                    <td>{{ c.direccion }}</td>
+                    <td>{{ c.fecha_registro|date:"d/m/Y" }}</td>
+                    <td><span class="badge bg-info">{{ c.get_tipo_cliente_display }}</span></td>
+                    <td><small>{{ c.notas|truncatewords:5 }}</small></td>
+                    <td>
+                        <a href="{% url 'actualizar_cliente' c.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'borrar_cliente' c.id %}" class="btn btn-danger btn-sm">Borrar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center">No hay clientes</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

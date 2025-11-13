@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-lg mt-5">
+    <div class="card-header bg-danger text-white">
+        <h3>¿Eliminar proveedor?</h3>
+    </div>
+    <div class="card-body text-center">
+        <p class="lead">¿Estás segura de eliminar al proveedor:</p>
+        <h4 class="text-danger">{{ proveedor.nombre }} - {{ proveedor.empresa }}</h4>
+        <form method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-lg">Sí, eliminar</button>
+        </form>
+        <a href="{% url 'ver_proveedores' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+    </div>
+</div>
+{% endblock %}

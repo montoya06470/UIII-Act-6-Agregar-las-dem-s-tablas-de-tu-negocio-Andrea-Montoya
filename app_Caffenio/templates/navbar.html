@@ -1,0 +1,102 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: #1a1a2e; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'inicio' %}">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Caffenio_logo.svg/1200px-Caffenio_logo.svg.png" 
+                alt="Caffenio" width="40" height="40" class="me-2">
+            Caffenio Admin
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inicio' %}">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-users"></i> Clientes
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'agregar_cliente' %}">+ Agregar</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ver_clientes' %}">Ver Todos</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-tie"></i> Empleados
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'agregar_empleado' %}">+ Agregar</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ver_empleados' %}">Ver Todos</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-tags"></i> Categorías
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'agregar_categoria' %}">+ Agregar</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ver_categorias' %}">Ver Todos</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-truck"></i> Proveedores
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'agregar_proveedor' %}">+ Agregar</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ver_proveedores' %}">Ver Todos</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-coffee"></i> Productos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'agregar_producto' %}">+ Agregar</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ver_productos' %}">Ver Todos</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-cash-register"></i> Ventas
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'agregar_venta' %}">+ Nueva Venta</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ver_ventas' %}">Ver Ventas</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-warning" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-receipt"></i> Detalle Venta
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'ver_ventas' %}">
+                            <i class="fas fa-list"></i> Ver Lista de Ventas
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-success" href="#">
+                            <i class="fas fa-plus"></i> Agregar Detalle (desde venta)
+                        </a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div style="height: 85px;"></div>

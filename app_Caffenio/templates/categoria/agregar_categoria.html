@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Nueva Categoría{% endblock %}
+{% block content %}
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-info text-white">
+        <h3>Nueva Categoría</h3>
+    </div>
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label>Categoría</label>
+                    <select name="nombre_categoria" class="form-select" required>
+                        <option value="cafe_caliente">Café Caliente</option>
+                        <option value="cafe_frio">Café Frío</option>
+                        <option value="sin_cafe">Bebidas Sin Café</option>
+                        <option value="alimentos">Alimentos</option>
+                        <option value="panaderia">Panadería</option>
+                        <option value="mercancia">Mercancía</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Descripción</label>
+                    <input type="text" name="descripcion" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Icono</label>
+                    <input type="text" name="icono" class="form-control" placeholder="fa-coffee">
+                </div>
+                <div class="col-md-6">
+                    <label>Orden</label>
+                    <input type="number" name="orden" class="form-control" value="0">
+                </div>
+                <div class="col-md-6">
+                    <label>Color</label>
+                    <input type="text" name="color" class="form-control" value="#6c757d">
+                </div>
+                <div class="col-md-6">
+                    <label>Imagen URL</label>
+                    <input type="url" name="imagen" class="form-control">
+                </div>
+                <div class="col-12">
+                    <label><input type="checkbox" name="activa" checked> Activa</label>
+                </div>
+                <div class="col-md-6">
+                    <label>Fecha Creación</label>
+                    <input type="text" class="form-control" value="Se crea automáticamente" disabled>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-info btn-lg">Guardar</button>
+                <a href="{% url 'ver_categorias' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

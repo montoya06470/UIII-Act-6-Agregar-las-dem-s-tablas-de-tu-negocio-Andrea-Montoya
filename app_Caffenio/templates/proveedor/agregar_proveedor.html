@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Agregar Proveedor{% endblock %}
+{% block content %}
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-success text-white">
+        <h3><i class="fas fa-truck"></i> Agregar Nuevo Proveedor</h3>
+    </div>
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label>Nombre</label>
+                    <input type="text" name="nombre" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Empresa</label>
+                    <input type="text" name="empresa" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Correo</label>
+                    <input type="email" name="correo" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Dirección</label>
+                    <input type="text" name="direccion" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>País</label>
+                    <input type="text" name="pais" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Tipo de producto</label>
+                    <select name="tipo_producto" class="form-select">
+                        <option value="bebidas">Bebidas</option>
+                        <option value="alimentos">Alimentos</option>
+                        <option value="complementos">Complementos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success btn-lg">Guardar Proveedor</button>
+                <a href="{% url 'ver_proveedores' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

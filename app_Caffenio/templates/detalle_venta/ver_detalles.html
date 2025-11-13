@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Detalles de Venta{% endblock %}
+{% block content %}
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-dark text-white d-flex justify-content-between">
+        <h3>Detalles de Venta</h3>
+        <a href="{% url 'ver_ventas' %}" class="btn btn-light">Volver a Ventas</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Venta</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Descuento</th>
+                    <th>Subtotal</th>
+                    <th>Nota</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in detalles %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href="{% url 'ver_detalle_venta' d.venta.id %}">#{{ d.venta.id }}</a></td>
+                    <td><strong>{{ d.producto.nombre }}</strong></td>
+                    <td><span class="badge bg-primary">{{ d.cantidad }}</span></td>
+                    <td>$ {{ d.precio_unitario }}</td>
+                    <td><span class="badge bg-warning text-dark">{{ d.descuento }}%</span></td>
+                    <td><strong class="text-success">$ {{ d.subtotal }}</strong></td>
+                    <td><small>{{ d.nota|default:"—" }}</small></td>
+                    <td>
+                        <a href="{% url 'actualizar_detalle_venta' d.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'borrar_detalle_venta' d.id %}" class="btn btn-danger btn-sm">Borrar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center">No hay detalles</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

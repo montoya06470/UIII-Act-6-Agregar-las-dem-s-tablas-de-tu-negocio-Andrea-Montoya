@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-warning text-dark">
+        <h3>Editar Proveedor</h3>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" action="{% url 'realizar_actualizacion_proveedor' proveedor.id %}">
+            {% csrf_token %}
+            <!-- mismo formulario que agregar, pero con values -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label>Nombre</label>
+                    <input type="text" name="nombre" class="form-control" value="{{ proveedor.nombre }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Empresa</label>
+                    <input type="text" name="empresa" class="form-control" value="{{ proveedor.empresa }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" class="form-control" value="{{ proveedor.telefono }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Correo</label>
+                    <input type="email" name="correo" class="form-control" value="{{ proveedor.correo }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Dirección</label>
+                    <input type="text" name="direccion" class="form-control" value="{{ proveedor.direccion }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label>País</label>
+                    <input type="text" name="pais" class="form-control" value="{{ proveedor.pais }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Tipo de producto</label>
+                    <select name="tipo_producto" class="form-select">
+                        <option value="bebidas" {% if proveedor.tipo_producto == 'bebidas' %}selected{% endif %}>Bebidas</option>
+                        <option value="alimentos" {% if proveedor.tipo_producto == 'alimentos' %}selected{% endif %}>Alimentos</option>
+                        <option value="complementos" {% if proveedor.tipo_producto == 'complementos' %}selected{% endif %}>Complementos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-warning btn-lg">Actualizar</button>
+                <a href="{% url 'ver_proveedores' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

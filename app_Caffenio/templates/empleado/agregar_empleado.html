@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Agregar Empleado{% endblock %}
+{% block content %}
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-success text-white">
+        <h3>Nuevo Empleado</h3>
+    </div>
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6"><label>Nombre</label><input type="text" name="nombre" class="form-control" required></div>
+                <div class="col-md-6"><label>Puesto</label>
+                    <select name="puesto" class="form-select" required>
+                        <option value="cajero">Cajero</option>
+                        <option value="barista">Barista</option>
+                        <option value="gerente">Gerente</option>
+                        <option value="supervisor">Supervisor</option>
+                        <option value="limpieza">Limpieza</option>
+                        <option value="seguridad">Seguridad</option>
+                    </select>
+                </div>
+                <div class="col-md-6"><label>Teléfono</label><input type="text" name="telefono" class="form-control" required></div>
+                <div class="col-md-6"><label>Correo</label><input type="email" name="correo" class="form-control" required></div>
+                <div class="col-md-6"><label>Fecha Contratación</label><input type="date" name="fecha_contratacion" class="form-control" required></div>
+                <div class="col-md-6"><label>Salario</label><input type="number" step="0.01" name="salario" class="form-control" required></div>
+                <div class="col-12"><label><input type="checkbox" name="activo" checked> Activo</label></div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success btn-lg">Guardar</button>
+                <a href="{% url 'ver_empleados' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-lg mt-5">
+    <div class="card-header bg-danger text-white">
+        <h3>Eliminar Categoría</h3>
+    </div>
+    <div class="card-body text-center">
+        <p class="lead">¿Eliminar esta categoría?</p>
+        <h5 class="text-danger">{{ categoria.get_nombre_categoria_display }}</h5>
+        <p><small>{{ categoria.productos.count }} productos asociados</small></p>
+        <form method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-lg">Sí, eliminar</button>
+        </form>
+        <a href="{% url 'ver_categorias' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+    </div>
+</div>
+{% endblock %}

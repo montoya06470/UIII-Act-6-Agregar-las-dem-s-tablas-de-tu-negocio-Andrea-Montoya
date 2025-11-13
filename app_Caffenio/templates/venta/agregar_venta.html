@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-lg border-success mt-4">
+    <div class="card-header bg-success text-white">
+        <h3 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Nueva Venta</h3>
+    </div>
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <!-- CLIENTE -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-user me-1"></i>Cliente</label>
+                    <select name="cliente" class="form-select" required>
+                        <option value="">-- Seleccionar Cliente --</option>
+                        {% for c in clientes %}
+                        <option value="{{ c.id }}">{{ c.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- EMPLEADO -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-user-tie me-1"></i>Empleado</label>
+                    <select name="empleado" class="form-select" required>
+                        <option value="">-- Seleccionar Empleado --</option>
+                        {% for e in empleados %}
+                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- PRODUCTOS (MÚLTIPLES) -->
+                <div class="col-md-12">
+                    <label class="form-label"><i class="fas fa-coffee me-1"></i>Productos</label>
+                    <div id="productos-container">
+                        <div class="row g-2 mb-2 producto-item">
+                            <div class="col-md-6">
+                                <select name="producto_id" class="form-select producto-select" required>
+                                    <option value="">-- Seleccionar Producto --</option>
+                                    {% for p in productos %}
+                                    <option value="{{ p.id }}" data-precio="{{ p.precio }}">
+                                        {{ p.nombre }} - ${{ p.precio }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" min="1" value="1" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control subtotal" placeholder="$0.00" readonly>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-danger btn-sm remove-producto">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="agregar-producto">
+                        <i class="fas fa-plus me-1"></i>Agregar Producto
+                    </button>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-dollar-sign me-1"></i>Total</label>
+                    <input type="number" step="0.01" name="total" id="total-venta" class="form-control" value="0.00" readonly>
+                </div>
+
+                <!-- MÉTODO DE PAGO -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-credit-card me-1"></i>Método de Pago</label>
+                    <select name="metodo_pago" class="form-select" required>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="tarjeta">Tarjeta</option>
+                        <option value="transferencia">Transferencia</option>
+                    </select>
+                </div>
+
+                <!-- SUCURSAL -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-store me-1"></i>Sucursal</label>
+                    <select name="sucursal" class="form-select" required>
+                        <option>Sucursal 1</option>
+                        <option>Sucursal 2</option>
+                    </select>
+                </div>
+
+                <!-- ESTADO -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-check-circle me-1"></i>Estado</label>
+                    <select name="estado" class="form-select" required>
+                        <option value="completada">Completada</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- BOTONES -->
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-save me-1"></i>Guardar Venta
+                </button>
+                <a href="{% url 'ver_ventas' %}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- SCRIPT 100% FUNCIONAL -->
+<script>
+// Clonar fila de producto
+document.getElementById('agregar-producto').addEventListener('click', function() {
+    const container = document.getElementById('productos-container');
+    const primeraFila = container.querySelector('.producto-item');
+    const nuevaFila = primeraFila.cloneNode(true);
+    
+    // Reiniciar valores
+    nuevaFila.querySelector('.producto-select').selectedIndex = 0;
+    nuevaFila.querySelector('input[name="cantidad"]').value = 1;
+    nuevaFila.querySelector('.subtotal').value = '';
+    
+    // CORREGIDO: container (no container10)
+    container.appendChild(nuevaFila);
+    
+    calcularTotal();
+});
+
+// Eliminar fila
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.remove-producto')) {
+        const filas = document.querySelectorAll('.producto-item');
+        if (filas.length > 1) {
+            e.target.closest('.producto-item').remove();
+            calcularTotal();
+        }
+    }
+});
+
+// Calcular subtotal al cambiar producto o cantidad
+document.addEventListener('change', function(e) {
+    if (e.target.matches('.producto-select') || e.target.matches('input[name="cantidad"]')) {
+        const fila = e.target.closest('.producto-item');
+        const select = fila.querySelector('.producto-select');
+        const precio = select.selectedOptions[0]?.dataset.precio || 0;
+        const cantidad = fila.querySelector('input[name="cantidad"]').value || 1;
+        const subtotal = (precio * cantidad).toFixed(2);
+        fila.querySelector('.subtotal').value = '$' + subtotal;
+        calcularTotal();
+    }
+});
+
+// Calcular total general
+function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll('.subtotal').forEach(input => {
+        const valor = input.value.replace('$', '');
+        total += parseFloat(valor) || 0;
+    });
+    document.getElementById('total-venta').value = total.toFixed(2);
+}
+
+// Inicializar al cargar
+calcularTotal();
+</script>
+{% endblock %}

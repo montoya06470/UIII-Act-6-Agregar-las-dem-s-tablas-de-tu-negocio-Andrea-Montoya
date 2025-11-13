@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-lg border-success mt-4">
+    <div class="card-header bg-success text-white d-flex justify-content-between">
+        <h3 class="mb-0">Ventas</h3>
+        <a href="{% url 'agregar_venta' %}" class="btn btn-light">+ Nueva</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-success">
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Empleado</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Método</th>
+                        <th>Sucursal</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in ventas %}
+                    <tr>
+                        <td>{{ v.id }}</td>
+                        <td>{{ v.fecha|date:"d/m/Y H:i" }}</td>
+                        <td>{{ v.cliente.nombre }}</td>
+                        <td>{{ v.empleado.nombre }}</td>
+                        <td>
+                            <ul class="list-unstyled mb-0">
+                                {% for d in v.detalleventa_set.all %}
+                                <li>
+                                    <strong>{{ d.producto.nombre }}</strong> 
+                                    x{{ d.cantidad }} 
+                                    <small class="text-muted">(${{ d.precio_unitario }})</small>
+                                </li>
+                                {% empty %}
+                                <li><em class="text-muted">Sin productos</em></li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td><strong>${{ v.total }}</strong></td>
+                        <td>{{ v.get_metodo_pago_display }}</td>
+                        <td>{{ v.sucursal }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if v.estado == 'completada' %}bg-success
+                                {% elif v.estado == 'pendiente' %}bg-warning
+                                {% else %}bg-danger{% endif %}">
+                                {{ v.get_estado_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'actualizar_venta' v.id %}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{% url 'borrar_venta' v.id %}" class="btn btn-danger btn-sm">Borrar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="10" class="text-center py-4">No hay ventas</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

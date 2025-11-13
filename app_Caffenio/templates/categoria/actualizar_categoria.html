@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-lg border-info mt-4">
+    <div class="card-header bg-info text-white">
+        <h3 class="mb-0"><i class="fas fa-edit me-2"></i>Editar Categoría</h3>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" action="{% url 'realizar_actualizacion_categoria' categoria.id %}">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-tag me-1"></i>Nombre</label>
+                    <select name="nombre_categoria" class="form-select" required>
+                        <option value="cafe_caliente" {% if categoria.nombre_categoria == 'cafe_caliente' %}selected{% endif %}>Café Caliente</option>
+                        <option value="cafe_frio" {% if categoria.nombre_categoria == 'cafe_frio' %}selected{% endif %}>Café Frío</option>
+                        <option value="sin_cafe" {% if categoria.nombre_categoria == 'sin_cafe' %}selected{% endif %}>Bebidas Sin Café</option>
+                        <option value="alimentos" {% if categoria.nombre_categoria == 'alimentos' %}selected{% endif %}>Alimentos</option>
+                        <option value="panaderia" {% if categoria.nombre_categoria == 'panaderia' %}selected{% endif %}>Panadería</option>
+                        <option value="mercancia" {% if categoria.nombre_categoria == 'mercancia' %}selected{% endif %}>Mercancía</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-align-left me-1"></i>Descripción</label>
+                    <input type="text" name="descripcion" class="form-control" value="{{ categoria.descripcion }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-icons me-1"></i>Icono (FontAwesome)</label>
+                    <input type="text" name="icono" class="form-control" value="{{ categoria.icono }}" placeholder="Ej: fas fa-coffee">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-sort-numeric-down me-1"></i>Orden</label>
+                    <input type="number" name="orden" class="form-control" value="{{ categoria.orden }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-palette me-1"></i>Color (HEX)</label>
+                    <input type="text" name="color" class="form-control" value="{{ categoria.color }}" placeholder="#6c757d">
+                </div>
+                <div class="col-12">
+                    <div class="form-check mt-3">
+                        <input type="checkbox" name="activa" class="form-check-input" id="activaCheck" {% if categoria.activa %}checked{% endif %}>
+                        <label class="form-check-label" for="activaCheck">
+                            <i class="fas fa-check-circle me-1"></i>Activa
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-info btn-lg">
+                    <i class="fas fa-save me-1"></i>Actualizar
+                </button>
+                <a href="{% url 'ver_categorias' %}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

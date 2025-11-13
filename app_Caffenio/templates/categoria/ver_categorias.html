@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-lg border-info mt-4">
+    <div class="card-header bg-info text-white d-flex justify-content-between">
+        <h3 class="mb-0"><i class="fas fa-tags me-2"></i>Categorías</h3>
+        <a href="{% url 'agregar_categoria' %}" class="btn btn-light"><i class="fas fa-plus me-1"></i>Nueva</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Icono</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Orden</th>
+                    <th>Color</th>
+                    <th>Activa</th>
+                    <th>Creada</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in categorias %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        {% if c.icono %}
+                        <i class="{{ c.icono }} fa-2x" style="color: {{ c.color }}"></i>
+                        {% else %}
+                        <i class="fas fa-tag fa-2x" style="color: {{ c.color }}"></i>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ c.get_nombre_categoria_display }}</strong></td>
+                    <td>{{ c.descripcion|truncatewords:6 }}</td>
+                    <td>{{ c.orden }}</td>
+                    <td><span class="badge" style="background: {{ c.color }}; color: white;">{{ c.color }}</span></td>
+                    <td>{% if c.activa %}<span class="badge bg-success">Sí</span>{% else %}<span class="badge bg-danger">No</span>{% endif %}</td>
+                    <td>{{ c.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'actualizar_categoria' c.id %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'borrar_categoria' c.id %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted">No hay categorías</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
