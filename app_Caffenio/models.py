@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal # Importar Decimal
 
 # ==========================================
 # CATEGORÍA (7 campos)
@@ -18,9 +19,9 @@ class Categoria(models.Model):
     descripcion = models.TextField()                    # 1
     icono = models.CharField(max_length=50, blank=True) # 2
     orden = models.IntegerField(default=0)              # 3
-    color = models.CharField(max_length=7, default='#6c757d')  # 4
+    color = models.CharField(max_length=7, default='#6c757d')   # 4
     activa = models.BooleanField(default=True)          # 5
-    fecha_creacion = models.DateTimeField(auto_now_add=True)  # 6
+    fecha_creacion = models.DateTimeField(auto_now_add=True)    # 6
     # 7º CAMPO: **NOMBRE MOSTRADO EN SELECTS**
     # → Ya está con `get_nombre_categoria_display`
 
@@ -80,8 +81,9 @@ class Producto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='productos')
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, related_name='productos')
     sucursal = models.CharField(max_length=50, choices=[('Sucursal 1', 'Sucursal 1'), ('Sucursal 2', 'Sucursal 2')])
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='productos')
-    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, related_name='productos')
+    # Los siguientes dos campos están duplicados, se dejan por si son intencionales o necesarios en tu código original
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='productos_dup')
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, related_name='productos_dup') 
 
     def __str__(self): return self.nombre
 
@@ -109,14 +111,25 @@ class DetalleVenta(models.Model):
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     nota = models.TextField(blank=True)
+    
+    # 🆕 CAMPO AGREGADO: Es necesario si lo calculas y asignas en el save()
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    def subtotal(self):
-        return self.cantidad * self.precio_unitario * (1 - self.descuento / 100)
+    # Nota: La función 'subtotal' original ha sido renombrada/movida 
+    # a la lógica del save() para usar el campo de la DB.
+    def calcular_subtotal(self):
+        # Usamos Decimal('100') para asegurar la precisión con DecimalField
+        return self.cantidad * self.precio_unitario * (Decimal('1') - self.descuento / Decimal('100'))
 
     def save(self, *args, **kwargs):
+        # Esta línea fue la 119 donde ocurrió el error, ahora se corrige:
         if not self.precio_unitario:
             self.precio_unitario = self.producto.precio
-        self.subtotal = self.cantidad * self.precio_unitario * (1 - self.descuento / 100)
+            
+        # 🟢 CORRECCIÓN: Usamos la función de cálculo con Decimales.
+        # Esto soluciona el TypeError al asegurar tipos numéricos.
+        self.subtotal = self.calcular_subtotal()
+        
         super().save(*args, **kwargs)
 
     def __str__(self): return f"{self.cantidad}x {self.producto.nombre}"

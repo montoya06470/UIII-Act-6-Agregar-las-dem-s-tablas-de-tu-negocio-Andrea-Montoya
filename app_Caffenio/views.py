@@ -3,6 +3,7 @@ from .models import (
     Categoria, Producto, Proveedor, Cliente, Empleado,
     Venta, DetalleVenta
 )
+from decimal import Decimal # 👈 ¡Importación necesaria para manejo seguro de dinero!
 
 # ==================== INICIO ====================
 def inicio(request):
@@ -51,6 +52,7 @@ def borrar_categoria(request, id):
 # ==================== PRODUCTOS ====================
 def ver_productos(request):
     productos = Producto.objects.select_related('categoria', 'proveedor').all()
+    # ⚠️ Asegúrate de que 'producto/ver_productos.html' exista en la carpeta templates
     return render(request, 'producto/ver_productos.html', {'productos': productos})
 
 def agregar_producto(request):
@@ -245,11 +247,20 @@ def agregar_venta(request):
         max_len = min(len(productos), len(cantidades), len(precios))
         for i in range(max_len):
             if productos[i] and cantidades[i] and precios[i]:
+                
+                # 🟢 CORRECCIÓN: Conversión a int y Decimal para evitar TypeError
+                try:
+                    cantidad_int = int(cantidades[i])
+                    precio_dec = Decimal(precios[i].replace('$', ''))
+                except ValueError:
+                    # Ignora la fila si los datos no son válidos
+                    continue
+
                 DetalleVenta.objects.create(
                     venta=venta,
                     producto_id=productos[i],
-                    cantidad=cantidades[i],
-                    precio_unitario=precios[i].replace('$', '')
+                    cantidad=cantidad_int,
+                    precio_unitario=precio_dec
                 )
         return redirect('ver_ventas')
 
@@ -272,6 +283,7 @@ def actualizar_venta(request, id):
         venta.estado = request.POST['estado']
         venta.save()
 
+        # Borrar detalles antiguos antes de crear los nuevos
         venta.detalleventa_set.all().delete()
 
         productos = request.POST.getlist('producto_id')
@@ -281,11 +293,20 @@ def actualizar_venta(request, id):
         max_len = min(len(productos), len(cantidades), len(precios))
         for i in range(max_len):
             if productos[i] and cantidades[i] and precios[i]:
+                
+                # 🟢 CORRECCIÓN: Conversión a int y Decimal para evitar TypeError
+                try:
+                    cantidad_int = int(cantidades[i])
+                    precio_dec = Decimal(precios[i].replace('$', ''))
+                except ValueError:
+                    # Ignora la fila si los datos no son válidos
+                    continue
+
                 DetalleVenta.objects.create(
                     venta=venta,
                     producto_id=productos[i],
-                    cantidad=cantidades[i],
-                    precio_unitario=precios[i].replace('$', '')
+                    cantidad=cantidad_int,
+                    precio_unitario=precio_dec
                 )
         return redirect('ver_ventas')
 
@@ -303,8 +324,6 @@ def borrar_venta(request, id):
     return redirect('ver_ventas')
 
 # ==================== DETALLES DE VENTA ====================
-
-# NUEVA FUNCIÓN: Para ver los detalles de una venta específica (requiere ID)
 def ver_detalles_venta(request, id):
     venta = get_object_or_404(Venta.objects.select_related('cliente', 'empleado'), id=id)
     detalles = venta.detalleventa_set.select_related('producto').all()
@@ -318,11 +337,18 @@ def ver_detalles_venta(request, id):
 def agregar_detalle_venta(request, venta_id):
     venta = get_object_or_404(Venta, id=venta_id)
     if request.method == 'POST':
+        # Aseguramos la conversión aquí también si este formulario se usa
+        try:
+            precio_dec = Decimal(request.POST['precio_unitario'])
+            cantidad_int = int(request.POST['cantidad'])
+        except ValueError:
+            return redirect('ver_detalles_venta', id=venta_id) # O manejar el error
+            
         DetalleVenta.objects.create(
             venta=venta,
             producto_id=request.POST['producto'],
-            cantidad=request.POST['cantidad'],
-            precio_unitario=request.POST['precio_unitario'],
+            cantidad=cantidad_int,
+            precio_unitario=precio_dec,
             descuento=request.POST.get('descuento', 0),
             nota=request.POST.get('nota', '')
         )
